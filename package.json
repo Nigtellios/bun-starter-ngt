@@ -1,13 +1,15 @@
 {
   "name": "app",
-  "module": "src/app.ts",
+  "module": "src/server.ts",
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun run src/app.ts",
+    "start": "bun run src/app.ts",
+    "build": "bun build src/index.ts --outdir ./dist",
     "lint": "biome check src/",
     "lint:fix": "biome check src/ --fix",
-    "format": "biome format src/",
+    "format": "biome format src/ --write",
+    "check" : "biome check src/ --write",
     "test": "bun test",
     "prepare": "husky"
   },
