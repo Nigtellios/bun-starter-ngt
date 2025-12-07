@@ -1,4 +1,4 @@
 await Bun.build({
-    entrypoints: ['index.ts'],
-    outdir: './dist',
-})
+  entrypoints: ["index.ts"],
+  outdir: "./dist",
+});
