@@ -1,6 +1,6 @@
-import { registerRoute } from "@common/apiRegistry/registry";
 import { GetUserSchema, UserSchema } from "@api/user/model/userModel.ts";
 import { userController } from "@api/user/userController.ts";
+import { registerRoute } from "@common/apiRegistry/registry";
 import { validateRequest } from "@common/handlers/httpHandlers.ts";
 import { ServiceResponseSchema } from "@common/models/serviceResponse.ts";
 import { HTTPRequestMethods } from "@common/types/HTTPRequestMethods.ts";
