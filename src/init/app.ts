@@ -4,6 +4,7 @@ import { SmartRouter } from "hono/router/smart-router";
 import { TrieRouter } from "hono/router/trie-router";
 import { logger } from "../common";
 import openAPI from "./openAPI";
+import rateLimiterMiddleware from "@common/middleware/rateLimiter.ts";
 
 /**
  * Hono
@@ -14,6 +15,9 @@ const app = new Hono({
     routers: [new RegExpRouter(), new TrieRouter()],
   }),
 });
+
+// Use Rate Limiter Middleware globally for all routes
+app.use(rateLimiterMiddleware);
 
 logger.info("Initialized Hono app with SmartRouter (RegExpRouter + TrieRouter)");
 

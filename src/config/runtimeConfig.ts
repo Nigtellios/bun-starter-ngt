@@ -5,6 +5,7 @@ import { parseBoolean, parseInteger } from "../common/utils/parsers.ts";
  * Runtime configuration settings loaded from environment variables. Centralized for consistent defaults.
  */
 const RuntimeConfig = {
+  PORT: parseInteger(process.env.PORT, 3137),
   MODE: process.env.NODE_ENV || "development",
   LOG_LEVEL: process.env.LOG_LEVEL || "info",
   PRESERVE_LOGS: parseBoolean(process.env.PRESERVE_LOGS, false),

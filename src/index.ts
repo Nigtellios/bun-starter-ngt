@@ -1,3 +1,4 @@
+import RuntimeConfig from "@config/runtimeConfig";
 import app from "./init/app";
 
 /**
@@ -18,6 +19,6 @@ import app from "./init/app";
  */
 
 export default {
-  port: 3137,
+  port: RuntimeConfig.PORT,
   fetch: app.fetch,
 };
