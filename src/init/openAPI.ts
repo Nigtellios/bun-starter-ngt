@@ -1,11 +1,12 @@
 import { swaggerUI } from "@hono/swagger-ui";
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
+import { HTTPRequestMethods } from "../common/types/HTTPRequestMethods.ts";
 
 const openAPIApp = new OpenAPIHono();
 
 openAPIApp.openapi(
   createRoute({
-    method: "get",
+    method: HTTPRequestMethods.GET,
     path: "/hello",
     responses: {
       200: {
