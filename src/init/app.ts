@@ -1,10 +1,10 @@
+import rateLimiterMiddleware from "@common/middleware/rateLimiter.ts";
 import { Hono } from "hono";
 import { RegExpRouter } from "hono/router/reg-exp-router";
 import { SmartRouter } from "hono/router/smart-router";
 import { TrieRouter } from "hono/router/trie-router";
 import { logger } from "../common";
 import openAPI from "./openAPI";
-import rateLimiterMiddleware from "@common/middleware/rateLimiter.ts";
 
 /**
  * Hono
