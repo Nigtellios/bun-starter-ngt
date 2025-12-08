@@ -2,7 +2,8 @@ import { Hono } from "hono";
 import { RegExpRouter } from "hono/router/reg-exp-router";
 import { SmartRouter } from "hono/router/smart-router";
 import { TrieRouter } from "hono/router/trie-router";
-import openAPIApp from "./openAPI";
+import openAPI from "./openAPI";
+import { logger } from "../common";
 
 /**
  * Hono
@@ -14,9 +15,11 @@ const app = new Hono({
   }),
 });
 
-app.get("/", (c) => c.text("Hello Bun!"));
+logger.info("Initialized Hono app with SmartRouter (RegExpRouter + TrieRouter)");
+
+app.get("/", (c) => c.text("Bun!"));
 
 // Mount OpenAPI router so the generated spec and Swagger UI stay in sync.
-app.route("/", openAPIApp);
+app.route("/", openAPI);
 
 export default app;
