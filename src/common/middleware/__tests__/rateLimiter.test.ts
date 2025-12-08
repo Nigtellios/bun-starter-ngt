@@ -1,7 +1,7 @@
-import { describe, expect, test, beforeEach } from "bun:test";
+import { beforeEach, describe, expect, test } from "bun:test";
 import { Hono } from "hono";
-import { StatusCodes } from "http-status-codes";
 import { rateLimiter } from "hono-rate-limiter";
+import { StatusCodes } from "http-status-codes";
 
 describe("rateLimiterMiddleware", () => {
   let app: Hono;
@@ -56,7 +56,7 @@ describe("rateLimiterMiddleware", () => {
   describe("Rate limit enforcement", () => {
     test("should block requests after limit is exceeded", async () => {
       const limit = 9999;
-      
+
       // Make requests up to the limit
       for (let i = 0; i < limit; i++) {
         await app.request("/test");
@@ -121,12 +121,12 @@ describe("rateLimiterMiddleware", () => {
       const reset = response.headers.get("ratelimit-reset");
 
       expect(reset).toBeTruthy();
-      
+
       const resetTime = Number.parseInt(reset || "0");
-      
+
       // Reset value is in seconds (window duration), should be 900 for 15 minutes
       expect(resetTime).toBe(900);
-      
+
       // Reset should be within 15 minutes (900 seconds)
       const now = Math.floor(Date.now() / 1000);
       expect(resetTime - now).toBeLessThanOrEqual(900);
@@ -169,7 +169,7 @@ describe("rateLimiterMiddleware", () => {
 
       await app.request("/api/users");
       await app.request("/api/posts");
-      
+
       const response = await app.request("/test");
       const remaining = Number.parseInt(response.headers.get("ratelimit-remaining") || "0");
 
@@ -191,7 +191,7 @@ describe("rateLimiterMiddleware", () => {
     test("should track concurrent requests accurately", async () => {
       const concurrentCount = 50;
       const promises = Array.from({ length: concurrentCount }, () => app.request("/test"));
-      
+
       await Promise.all(promises);
 
       const response = await app.request("/test");
@@ -275,7 +275,7 @@ describe("rateLimiterMiddleware", () => {
       }
 
       const response = await app.request("/test");
-      
+
       // The rate limiter should return some response body
       expect(response.status).toBe(StatusCodes.TOO_MANY_REQUESTS);
       expect(response.body).toBeTruthy();
@@ -353,7 +353,7 @@ describe("rateLimiterMiddleware", () => {
   describe("Performance", () => {
     test("should handle rapid sequential requests", async () => {
       const startTime = Date.now();
-      
+
       for (let i = 0; i < 100; i++) {
         await app.request("/test");
       }
@@ -367,9 +367,9 @@ describe("rateLimiterMiddleware", () => {
 
     test("should not significantly slow down valid requests", async () => {
       const startTime = Date.now();
-      
+
       const response = await app.request("/test");
-      
+
       const endTime = Date.now();
       const duration = endTime - startTime;
 

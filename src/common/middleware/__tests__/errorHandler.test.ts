@@ -1,10 +1,10 @@
-import { describe, expect, test, beforeEach, mock } from "bun:test";
+import { beforeEach, describe, expect, mock, test } from "bun:test";
+import RuntimeConfig from "config/runtimeConfig.ts";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "http-status-codes";
 import errorHandlerMiddleware, { toError } from "../errorHandler.ts";
 import requestLogger from "../requestLogger.ts";
-import RuntimeConfig from "config/runtimeConfig.ts";
 
 describe("toError utility", () => {
   test("should convert Error instance to Error", () => {
@@ -140,7 +140,7 @@ describe("errorHandlerMiddleware", () => {
           {
             status: StatusCodes.BAD_REQUEST,
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
 
         throw new HTTPException(StatusCodes.BAD_REQUEST, { res: response });
@@ -166,7 +166,7 @@ describe("errorHandlerMiddleware", () => {
       const response = await app.request("/error");
 
       expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
-      
+
       const contentType = response.headers.get("content-type");
       if (contentType?.includes("application/json")) {
         const body = await response.json();
@@ -310,7 +310,7 @@ describe("errorHandlerMiddleware", () => {
       const response = await app.request("/async-error");
 
       expect(response.status).toBe(StatusCodes.INTERNAL_SERVER_ERROR);
-      
+
       const contentType = response.headers.get("content-type");
       if (contentType?.includes("application/json")) {
         const body = await response.json();

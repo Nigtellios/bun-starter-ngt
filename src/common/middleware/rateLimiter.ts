@@ -9,9 +9,8 @@ const rateLimiterMiddleware = rateLimiter({
   keyGenerator: (context) => {
     // Rate limit per client IP address
     // This ensures each user has their own rate limit counter
-    const ip = context.req.header("x-forwarded-for")?.split(",")[0]?.trim() || 
-               context.req.header("x-real-ip") || 
-               "unknown";
+    const ip =
+      context.req.header("x-forwarded-for")?.split(",")[0]?.trim() || context.req.header("x-real-ip") || "unknown";
     return ip;
   },
   // store: ... , // For production with multiple servers, use Redis store for shared state

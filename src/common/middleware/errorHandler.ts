@@ -1,8 +1,8 @@
+import RuntimeConfig from "config/runtimeConfig.ts";
 import type { Context } from "hono";
+import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "http-status-codes";
-import { createMiddleware } from "hono/factory";
-import RuntimeConfig from "config/runtimeConfig.ts";
 import { logger } from "../index.ts";
 
 export type RequestErrorEnv = {

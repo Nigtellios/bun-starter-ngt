@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { StatusCodes } from "http-status-codes";
-import { createMiddleware } from "hono/factory";
 import RuntimeConfig from "config/runtimeConfig.ts";
+import { createMiddleware } from "hono/factory";
+import { StatusCodes } from "http-status-codes";
 import { logger } from "../index.ts";
 import type { RequestErrorEnv } from "./errorHandler.ts";
 

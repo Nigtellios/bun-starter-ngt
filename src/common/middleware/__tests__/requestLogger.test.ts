@@ -1,11 +1,11 @@
-import { describe, expect, test, beforeEach, afterEach, mock, spyOn } from "bun:test";
+import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:test";
+import RuntimeConfig from "config/runtimeConfig.ts";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { StatusCodes } from "http-status-codes";
-import requestLogger from "../requestLogger.ts";
-import RuntimeConfig from "config/runtimeConfig.ts";
 import { logger } from "../../index.ts";
 import type { RequestErrorEnv } from "../errorHandler.ts";
+import requestLogger from "../requestLogger.ts";
 
 describe("requestLogger middleware", () => {
   let app: Hono<RequestErrorEnv>;
@@ -16,11 +16,11 @@ describe("requestLogger middleware", () => {
     // Create fresh app for each test
     app = new Hono<RequestErrorEnv>();
     app.use("*", requestLogger);
-    
+
     // Store original config values
     originalLogRequests = RuntimeConfig.LOG_REQUESTS;
     originalLogResponses = RuntimeConfig.LOG_RESPONSES;
-    
+
     // Enable logging by default for tests
     RuntimeConfig.LOG_REQUESTS = true;
     RuntimeConfig.LOG_RESPONSES = false;
@@ -111,11 +111,11 @@ describe("requestLogger middleware", () => {
       });
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/slow");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[0];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -127,11 +127,11 @@ describe("requestLogger middleware", () => {
       app.get("/fast", (c) => c.json({ success: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/fast");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[0];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -146,11 +146,11 @@ describe("requestLogger middleware", () => {
       app.get("/test", (c) => c.json({ success: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/test");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[0];
       expect(logCall).toBeDefined();
       expect(logCall![1]).toBe("Request completed");
@@ -160,7 +160,7 @@ describe("requestLogger middleware", () => {
       app.post("/create", (c) => c.json({ created: true }, StatusCodes.CREATED));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/create", { method: "POST" });
 
       expect(logSpy).toHaveBeenCalled();
@@ -174,11 +174,11 @@ describe("requestLogger middleware", () => {
       });
 
       const logSpy = spyOn(logger, "warn");
-      
+
       await app.request("/bad-request");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[0];
       expect(logCall).toBeDefined();
       expect(logCall![1]).toBe("Request completed with client error");
@@ -186,7 +186,7 @@ describe("requestLogger middleware", () => {
 
     test("should log 404 responses as warn", async () => {
       const logSpy = spyOn(logger, "warn");
-      
+
       await app.request("/non-existent");
 
       expect(logSpy).toHaveBeenCalled();
@@ -198,11 +198,11 @@ describe("requestLogger middleware", () => {
       });
 
       const logSpy = spyOn(logger, "error");
-      
+
       await app.request("/error");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[0];
       expect(logCall).toBeDefined();
       expect(logCall![1]).toBe("Request completed with server error");
@@ -214,7 +214,7 @@ describe("requestLogger middleware", () => {
       });
 
       const logSpy = spyOn(logger, "error");
-      
+
       await app.request("/bad-gateway");
 
       expect(logSpy).toHaveBeenCalled();
@@ -231,12 +231,12 @@ describe("requestLogger middleware", () => {
       const infoSpy = spyOn(logger, "info");
       const warnSpy = spyOn(logger, "warn");
       const errorSpy = spyOn(logger, "error");
-      
+
       // Clear any previous calls
       infoSpy.mockClear();
       warnSpy.mockClear();
       errorSpy.mockClear();
-      
+
       await isolatedApp.request("/redirect");
 
       // 3xx responses should not be logged
@@ -254,11 +254,11 @@ describe("requestLogger middleware", () => {
       isolatedApp.post("/test-post", (c) => c.json({ success: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request("/test-post", { method: "POST" });
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1]; // Get LAST call
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -273,11 +273,11 @@ describe("requestLogger middleware", () => {
       isolatedApp.get("/api/users", (c) => c.json({ users: [] }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request("/api/users");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -289,11 +289,11 @@ describe("requestLogger middleware", () => {
       app.get("/test", (c) => c.json({ success: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/test");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[0];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -308,12 +308,12 @@ describe("requestLogger middleware", () => {
       isolatedApp.get("/test-reqid", (c) => c.json({ success: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       const response = await isolatedApp.request("/test-reqid");
       const requestId = response.headers.get("X-Request-Id");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -325,11 +325,11 @@ describe("requestLogger middleware", () => {
       app.get("/test", (c) => c.json({ success: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/test");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[0];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -348,11 +348,11 @@ describe("requestLogger middleware", () => {
       });
 
       const errorSpy = spyOn(logger, "error");
-      
+
       await isolatedApp.request("/error-test");
 
       expect(errorSpy).toHaveBeenCalled();
-      
+
       const logCall = errorSpy.mock.calls[errorSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -368,11 +368,11 @@ describe("requestLogger middleware", () => {
       app.get("/test", (c) => c.json({ secret: "data" }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/test");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[0];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -382,45 +382,45 @@ describe("requestLogger middleware", () => {
 
     test("should log JSON response body when LOG_RESPONSES is true", async () => {
       RuntimeConfig.LOG_RESPONSES = true;
-      
+
       const isolatedApp = new Hono<RequestErrorEnv>();
       isolatedApp.use("*", requestLogger);
       isolatedApp.get("/test-json", (c) => c.json({ data: "test" }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request("/test-json");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
 
       expect(logEntry.responseBody).toEqual({ data: "test" });
-      
+
       RuntimeConfig.LOG_RESPONSES = false;
     });
 
     test("should log text response body when LOG_RESPONSES is true", async () => {
       RuntimeConfig.LOG_RESPONSES = true;
-      
+
       const isolatedApp = new Hono<RequestErrorEnv>();
       isolatedApp.use("*", requestLogger);
       isolatedApp.get("/test-text", (c) => c.text("Plain text"));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request("/test-text");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
 
       expect(logEntry.responseBody).toBe("Plain text");
-      
+
       RuntimeConfig.LOG_RESPONSES = false;
     });
 
@@ -433,11 +433,11 @@ describe("requestLogger middleware", () => {
       });
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/binary");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[0];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -453,7 +453,7 @@ describe("requestLogger middleware", () => {
       app.get("/test", (c) => c.json({ success: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/test");
 
       expect(logSpy).toHaveBeenCalled();
@@ -461,7 +461,7 @@ describe("requestLogger middleware", () => {
 
     test("should not log when LOG_REQUESTS is false", async () => {
       RuntimeConfig.LOG_REQUESTS = false;
-      
+
       const isolatedApp = new Hono<RequestErrorEnv>();
       isolatedApp.use("*", requestLogger);
       isolatedApp.get("/test-nolog", (c) => c.json({ success: true }));
@@ -469,18 +469,18 @@ describe("requestLogger middleware", () => {
       const infoSpy = spyOn(logger, "info");
       const warnSpy = spyOn(logger, "warn");
       const errorSpy = spyOn(logger, "error");
-      
+
       // Clear any previous calls
       infoSpy.mockClear();
       warnSpy.mockClear();
       errorSpy.mockClear();
-      
+
       await isolatedApp.request("/test-nolog");
 
       expect(infoSpy).not.toHaveBeenCalled();
       expect(warnSpy).not.toHaveBeenCalled();
       expect(errorSpy).not.toHaveBeenCalled();
-      
+
       RuntimeConfig.LOG_REQUESTS = true;
     });
 
@@ -501,11 +501,11 @@ describe("requestLogger middleware", () => {
       app.get("/test", (c) => c.json({ method: "GET" }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/test", { method: "GET" });
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[0];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -519,11 +519,11 @@ describe("requestLogger middleware", () => {
       isolatedApp.post("/test-post-method", (c) => c.json({ method: "POST" }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request("/test-post-method", { method: "POST" });
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -537,11 +537,11 @@ describe("requestLogger middleware", () => {
       isolatedApp.put("/test-put", (c) => c.json({ method: "PUT" }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request("/test-put", { method: "PUT" });
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -555,11 +555,11 @@ describe("requestLogger middleware", () => {
       isolatedApp.delete("/test-delete", (c) => c.json({ method: "DELETE" }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request("/test-delete", { method: "DELETE" });
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -573,11 +573,11 @@ describe("requestLogger middleware", () => {
       isolatedApp.patch("/test-patch", (c) => c.json({ method: "PATCH" }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request("/test-patch", { method: "PATCH" });
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -593,11 +593,11 @@ describe("requestLogger middleware", () => {
       isolatedApp.get("/test-query", (c) => c.json({ success: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request("/test-query?foo=bar&baz=qux");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -611,11 +611,11 @@ describe("requestLogger middleware", () => {
       isolatedApp.get("/", (c) => c.json({ root: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request("/");
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -625,17 +625,17 @@ describe("requestLogger middleware", () => {
 
     test("should handle very long paths", async () => {
       const longPath = "/test-long/" + "a".repeat(500);
-      
+
       const isolatedApp = new Hono<RequestErrorEnv>();
       isolatedApp.use("*", requestLogger);
       isolatedApp.get(longPath, (c) => c.json({ success: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await isolatedApp.request(longPath);
 
       expect(logSpy).toHaveBeenCalled();
-      
+
       const logCall = logSpy.mock.calls[logSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -652,13 +652,13 @@ describe("requestLogger middleware", () => {
       });
 
       const warnSpy = spyOn(logger, "warn");
-      
+
       await app.request("/no-response");
 
       // In reality, Hono returns 404, not "no response"
       // So we check for a warn log call
       expect(warnSpy).toHaveBeenCalled();
-      
+
       const lastCall = warnSpy.mock.calls[warnSpy.mock.calls.length - 1];
       const logEntry = lastCall![0] as any;
       expect(logEntry.path).toBe("/no-response");
@@ -667,11 +667,7 @@ describe("requestLogger middleware", () => {
     test("should handle concurrent requests independently", async () => {
       app.get("/test", (c) => c.json({ success: true }));
 
-      const responses = await Promise.all([
-        app.request("/test"),
-        app.request("/test"),
-        app.request("/test"),
-      ]);
+      const responses = await Promise.all([app.request("/test"), app.request("/test"), app.request("/test")]);
 
       const requestIds = responses.map((r) => r.headers.get("X-Request-Id"));
 
@@ -686,7 +682,7 @@ describe("requestLogger middleware", () => {
       });
 
       const logSpy = spyOn(logger, "info");
-      
+
       const response = await app.request("/async");
 
       expect(response.status).toBe(StatusCodes.OK);
@@ -697,7 +693,7 @@ describe("requestLogger middleware", () => {
       app.get("/test/path%20with%20spaces", (c) => c.json({ success: true }));
 
       const logSpy = spyOn(logger, "info");
-      
+
       await app.request("/test/path%20with%20spaces");
 
       expect(logSpy).toHaveBeenCalled();
@@ -714,11 +710,11 @@ describe("requestLogger middleware", () => {
       });
 
       const errorSpy = spyOn(logger, "error");
-      
+
       await isolatedApp.request("/error-integration");
 
       expect(errorSpy).toHaveBeenCalled();
-      
+
       const logCall = errorSpy.mock.calls[errorSpy.mock.calls.length - 1];
       expect(logCall).toBeDefined();
       const logEntry = logCall![0] as any;
@@ -733,7 +729,7 @@ describe("requestLogger middleware", () => {
       });
 
       const warnSpy = spyOn(logger, "warn");
-      
+
       await app.request("/http-error");
 
       expect(warnSpy).toHaveBeenCalled();
@@ -745,9 +741,9 @@ describe("requestLogger middleware", () => {
       app.get("/fast", (c) => c.json({ success: true }));
 
       const startTime = Date.now();
-      
+
       await app.request("/fast");
-      
+
       const duration = Date.now() - startTime;
 
       // Logging overhead should be minimal (less than 50ms)
@@ -758,14 +754,14 @@ describe("requestLogger middleware", () => {
       app.get("/test", (c) => c.json({ success: true }));
 
       const requests = Array.from({ length: 100 }, () => app.request("/test"));
-      
+
       const startTime = Date.now();
       const responses = await Promise.all(requests);
       const duration = Date.now() - startTime;
 
       // All requests should succeed
       expect(responses.every((r) => r.status === StatusCodes.OK)).toBe(true);
-      
+
       // Should complete in reasonable time
       expect(duration).toBeLessThan(5000);
     });

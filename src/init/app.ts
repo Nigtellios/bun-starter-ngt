@@ -1,6 +1,6 @@
 import errorHandler, { type RequestErrorEnv } from "@common/middleware/errorHandler";
-import requestLogger from "@common/middleware/requestLogger.ts";
 import rateLimiterMiddleware from "@common/middleware/rateLimiter.ts";
+import requestLogger from "@common/middleware/requestLogger.ts";
 import { Hono } from "hono";
 import { RegExpRouter } from "hono/router/reg-exp-router";
 import { SmartRouter } from "hono/router/smart-router";
