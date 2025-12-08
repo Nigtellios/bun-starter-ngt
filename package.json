@@ -11,7 +11,9 @@
     "format": "biome format src/ --write",
     "check": "biome check src/ --write",
     "test": "bun test",
-    "prepare": "husky"
+    "prepare": "husky",
+    "logs:init": "bun scripts/prepareLogs.ts",
+    "logs:prune": "bun scripts/pruneLogs.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.8",
