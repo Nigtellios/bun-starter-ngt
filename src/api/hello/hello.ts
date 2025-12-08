@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { registerRoute } from "../registry/registry.ts";
 import { HTTPRequestMethods } from "../../common/types/HTTPRequestMethods.ts";
+import { registerRoute } from "../registry/registry.ts";
 
 registerRoute(
   createRoute({

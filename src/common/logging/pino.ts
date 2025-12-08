@@ -7,8 +7,9 @@ const logger = pino({
     options: {
       colorize: true,
       translateTime: "SYS:HH:mm:ss | dd.mm.yyyy",
+    },
   },
-}});
+});
 
 logger.info("Logger initialized...");
 

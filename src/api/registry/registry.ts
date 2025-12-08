@@ -1,6 +1,6 @@
-import type { OpenAPIHono } from "@hono/zod-openapi";
-import type { RouteSpec, RouteHandler } from "./registry.type.ts";
 import { swaggerUI } from "@hono/swagger-ui";
+import type { OpenAPIHono } from "@hono/zod-openapi";
+import type { RouteHandler, RouteSpec } from "./registry.type.ts";
 export const registry: Array<readonly [RouteSpec, RouteHandler]> = [];
 
 /**
@@ -21,18 +21,15 @@ export const applyRegisteredRoutes = (openApiApp: OpenAPIHono) => {
 
 export const mountOpenAPI = (
   openApiApp: OpenAPIHono,
-  {
-    docsPath = "/docs",
-    swaggerPath = "/ui",
-  }: { docsPath?: string; swaggerPath?: string } = {},
+  { docsPath = "/docs", swaggerPath = "/ui" }: { docsPath?: string; swaggerPath?: string } = {},
 ) => {
   applyRegisteredRoutes(openApiApp);
 
   openApiApp.doc(docsPath, {
-    info: { 
+    info: {
       title: "Bun Starter NGT - OpenAPI",
-       version: "0.01" 
-      },
+      version: "0.01",
+    },
     openapi: "3.1.0",
   });
 
