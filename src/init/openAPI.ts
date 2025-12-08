@@ -1,17 +1,17 @@
-import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
+import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 
 const openAPIApp = new OpenAPIHono();
 
 openAPIApp.openapi(
   createRoute({
-    method: 'get',
-    path: '/hello',
+    method: "get",
+    path: "/hello",
     responses: {
       200: {
-        description: 'Respond a message',
+        description: "Respond a message",
         content: {
-          'application/json': {
+          "application/json": {
             schema: z.object({
               message: z.string(),
             }),
@@ -22,24 +22,24 @@ openAPIApp.openapi(
   }),
   (c) => {
     return c.json({
-      message: 'hello',
-    })
-  }
-)
+      message: "hello",
+    });
+  },
+);
 
 openAPIApp.get(
-  '/swagger-ui',
+  "/swagger-ui",
   swaggerUI({
-    url: '/docs',
-  })
-)
+    url: "/docs",
+  }),
+);
 
-openAPIApp.doc('/docs', {
+openAPIApp.doc("/docs", {
   info: {
-    title: 'An API',
-    version: 'v1',
+    title: "An API",
+    version: "v1",
   },
-  openapi: '3.1.0',
-})
+  openapi: "3.1.0",
+});
 
 export default openAPIApp;
