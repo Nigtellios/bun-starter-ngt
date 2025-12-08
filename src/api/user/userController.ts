@@ -1,6 +1,6 @@
-import type { Context } from "hono";
-import { handleServiceResponse } from "@common/handlers/httpHandlers.ts";
 import { userService } from "@api/user/service/userService.ts";
+import { handleServiceResponse } from "@common/handlers/httpHandlers.ts";
+import type { Context } from "hono";
 
 class UserController {
   public getUsers = async (context: Context) => {

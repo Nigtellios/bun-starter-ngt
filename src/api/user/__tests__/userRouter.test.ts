@@ -1,6 +1,6 @@
-import { expect, test, describe } from "bun:test";
-import type { ServiceResponse } from "@common/models/serviceResponse.ts";
+import { describe, expect, test } from "bun:test";
 import type { User } from "@api/user/model/userModel.ts";
+import type { ServiceResponse } from "@common/models/serviceResponse.ts";
 import app from "@init/app.ts";
 import { StatusCodes } from "http-status-codes";
 

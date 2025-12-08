@@ -708,7 +708,7 @@ describe("requestLogger middleware", () => {
         const error = new Error("Test error");
         throw error;
       });
-      
+
       // Add error handler to catch the thrown error
       isolatedApp.onError((err, c) => {
         return c.json({ error: err.message }, 500);

@@ -1,10 +1,10 @@
-import { createRoute, z } from "@hono/zod-openapi";
+import { registerRoute } from "@api/registry/registry.ts";
 import { GetUserSchema, UserSchema } from "@api/user/model/userModel.ts";
 import { userController } from "@api/user/userController.ts";
+import { validateRequest } from "@common/handlers/httpHandlers.ts";
 import { ServiceResponseSchema } from "@common/models/serviceResponse.ts";
 import { HTTPRequestMethods } from "@common/types/HTTPRequestMethods.ts";
-import { validateRequest } from "@common/handlers/httpHandlers.ts";
-import { registerRoute } from "@api/registry/registry.ts";
+import { createRoute, z } from "@hono/zod-openapi";
 
 // GET /users - Get all users
 registerRoute(
