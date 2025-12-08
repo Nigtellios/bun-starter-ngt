@@ -1,3 +1,4 @@
+import handleErrors, { type RequestErrorEnv } from "@common/middleware/errorHandler";
 import rateLimiterMiddleware from "@common/middleware/rateLimiter.ts";
 import { Hono } from "hono";
 import { RegExpRouter } from "hono/router/reg-exp-router";
@@ -10,11 +11,13 @@ import openAPI from "./openAPI";
  * Hono
  * Hono docs: https://hono.dev/docs/getting-started/bun
  */
-const app = new Hono({
+const app = new Hono<RequestErrorEnv>({
   router: new SmartRouter({
     routers: [new RegExpRouter(), new TrieRouter()],
   }),
 });
+
+handleErrors(app);
 
 // Use Rate Limiter Middleware globally for all routes
 app.use(rateLimiterMiddleware);
