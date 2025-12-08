@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { handleServiceResponse } from "../../common/handlers/httpHandlers.ts";
 import { ServiceResponse, ServiceResponseSchema } from "../../common/models/serviceResponse.ts";
 import { HTTPRequestMethods } from "../../common/types/HTTPRequestMethods.ts";
-import { registerRoute } from "../registry/registry.ts";
+import { registerRoute } from "../../common/apiRegistry/registry.ts";
 
 registerRoute(
   createRoute({

@@ -1,4 +1,4 @@
-import { registerRoute } from "@api/registry/registry.ts";
+import { registerRoute } from "@common/apiRegistry/registry";
 import { GetUserSchema, UserSchema } from "@api/user/model/userModel.ts";
 import { userController } from "@api/user/userController.ts";
 import { validateRequest } from "@common/handlers/httpHandlers.ts";
