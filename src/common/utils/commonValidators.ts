@@ -5,5 +5,5 @@ export const commonValidators = {
     .refine((data) => !Number.isNaN(Number(data)), "ID must be a numeric value")
     .transform(Number)
     .refine((num) => num > 0, "ID must be a positive number"),
-    // Add more common validators as needed
+  // Add more common validators as needed
 };

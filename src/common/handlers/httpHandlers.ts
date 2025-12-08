@@ -1,15 +1,15 @@
-import { StatusCodes } from "http-status-codes";
+import { ServiceResponse } from "@common/models/serviceResponse.ts";
 import type { Context, MiddlewareHandler } from "hono";
 import type { StatusCode } from "hono/utils/http-status";
-import { ZodError } from "zod";
+import { StatusCodes } from "http-status-codes";
 import type { ZodType } from "zod";
-import { ServiceResponse } from "@common/models/serviceResponse.ts";
+import { ZodError } from "zod";
 
 /**
  * Handle a service response and send it back to the client.
- * @param serviceResponse 
- * @param context 
- * @returns 
+ * @param serviceResponse
+ * @param context
+ * @returns
  */
 export const handleServiceResponse = (serviceResponse: ServiceResponse<any>, context: Context) => {
   context.status(serviceResponse.statusCode as StatusCode);
@@ -18,8 +18,8 @@ export const handleServiceResponse = (serviceResponse: ServiceResponse<any>, con
 
 /**
  * Read and parse the request body based on Content-Type header.
- * @param context 
- * @returns 
+ * @param context
+ * @returns
  */
 const readRequestBody = async (context: Context) => {
   const contentType = context.req.header("content-type")?.toLowerCase() ?? "";
@@ -46,8 +46,8 @@ const readRequestBody = async (context: Context) => {
 /**
  * Validate incoming request using the provided Zod schema.
  * The schema should validate an object with optional `body`, `query`, and `params` properties.
- * @param schema 
- * @returns 
+ * @param schema
+ * @returns
  */
 export const validateRequest = <Schema extends ZodType>(schema: Schema): MiddlewareHandler => {
   return async (context, next) => {
@@ -61,7 +61,10 @@ export const validateRequest = <Schema extends ZodType>(schema: Schema): Middlew
 
       await next();
     } catch (err) {
-      const message = err instanceof ZodError ? err.issues.map((issue) => issue.message).join(", ") : "Unable to process request payload";
+      const message =
+        err instanceof ZodError
+          ? err.issues.map((issue) => issue.message).join(", ")
+          : "Unable to process request payload";
       const errorMessage = `Invalid input: ${message}`;
       const statusCode = StatusCodes.BAD_REQUEST;
       const serviceResponse = ServiceResponse.failure(errorMessage, null, statusCode);
