@@ -9,7 +9,7 @@
     "lint": "biome check src/",
     "lint:fix": "biome check src/ --fix",
     "format": "biome format src/ --write",
-    "check" : "biome check src/ --write",
+    "check": "biome check src/ --write",
     "test": "bun test",
     "prepare": "husky"
   },
@@ -22,11 +22,13 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@hono/standard-validator": "^0.2.0",
     "@hono/swagger-ui": "^0.5.2",
     "@hono/zod-openapi": "^1.1.5",
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.0",
     "hono": "^4.10.7",
+    "hono-openapi": "^1.1.2",
     "http-status-codes": "^2.3.0",
     "pg": "^8.16.3",
     "zod": "^4.1.13"
