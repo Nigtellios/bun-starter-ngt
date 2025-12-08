@@ -1,4 +1,5 @@
-import handleErrors, { type RequestErrorEnv } from "@common/middleware/errorHandler";
+import errorHandler, { type RequestErrorEnv } from "@common/middleware/errorHandler";
+import requestLogger from "@common/middleware/requestLogger.ts";
 import rateLimiterMiddleware from "@common/middleware/rateLimiter.ts";
 import { Hono } from "hono";
 import { RegExpRouter } from "hono/router/reg-exp-router";
@@ -17,8 +18,9 @@ const app = new Hono<RequestErrorEnv>({
   }),
 });
 
-handleErrors(app);
-
+// Middlewares
+app.use(requestLogger);
+app.use(errorHandler);
 // Use Rate Limiter Middleware globally for all routes
 app.use(rateLimiterMiddleware);
 
