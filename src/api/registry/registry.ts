@@ -1,7 +1,7 @@
 import { swaggerUI } from "@hono/swagger-ui";
 import type { OpenAPIHono } from "@hono/zod-openapi";
-import type { RouteHandler, RouteSpec } from "./registry.type.ts";
 import GlobalAppConfig from "config/globalConfig.ts";
+import type { RouteHandler, RouteSpec } from "./registry.type.ts";
 export const registry: Array<readonly [RouteSpec, RouteHandler]> = [];
 
 /**

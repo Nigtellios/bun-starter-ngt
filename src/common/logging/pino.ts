@@ -1,5 +1,5 @@
-import pino from "pino";
 import RuntimeConfig from "config/runtimeConfig.ts";
+import pino from "pino";
 
 const logger = pino({
   level: RuntimeConfig.LOG_LEVEL,
