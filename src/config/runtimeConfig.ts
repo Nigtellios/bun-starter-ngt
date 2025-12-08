@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { parseBoolean, parseInteger } from "../utils/parsers.ts";
+import { parseBoolean, parseInteger } from "../common/utils/parsers.ts";
 
 /**
  * Runtime configuration settings loaded from environment variables. Centralized for consistent defaults.

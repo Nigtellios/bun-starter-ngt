@@ -17,7 +17,7 @@ const app = new Hono({
 
 logger.info("Initialized Hono app with SmartRouter (RegExpRouter + TrieRouter)");
 
-app.get("/", (c) => c.text("Bun!"));
+app.get("/", (context) => context.text("Bun!"));
 
 // Mount OpenAPI router so the generated spec and Swagger UI stay in sync.
 app.route("/", openAPI);
