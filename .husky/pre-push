@@ -1,1 +1,3 @@
+bun run logs:init
+bun run logs:prune
 bun run build
