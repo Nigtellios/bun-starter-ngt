@@ -30,7 +30,9 @@
     "paths": {
       "@api/*": ["api/*"],
       "@common/*": ["common/*"],
-      "@init/*": ["init/*"]
+      "@config/*": ["config/*"],
+      "@init/*": ["init/*"],
+      "@utils/*": ["utils/*"]
     }
   },
   "include": ["src/**/*"],
