@@ -1,7 +1,8 @@
 import pino from "pino";
+import RuntimeConfig from "config/runtimeConfig.ts";
 
 const logger = pino({
-  level: process.env.LOG_LEVEL || "info",
+  level: RuntimeConfig.LOG_LEVEL,
   transport: {
     target: "pino-pretty",
     options: {
@@ -11,6 +12,6 @@ const logger = pino({
   },
 });
 
-logger.info("Logger initialized...");
+logger.info(`Logger initialized at ${RuntimeConfig.LOG_LEVEL} level`);
 
 export default logger;
