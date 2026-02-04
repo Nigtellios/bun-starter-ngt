@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "bun --watch run src/index.ts",
-    "build": "bun build src/index.ts --outdir ./dist",
+    "build": "bun build src/index.ts --outdir ./dist --target bun",
     "lint": "biome check src/",
     "lint:fix": "biome check src/ --fix",
     "format": "biome format src/ --write",
