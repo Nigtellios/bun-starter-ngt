@@ -3,15 +3,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "../db/schema.ts";
 
-const {
-  DATABASE_URL,
-  DB_HOST,
-  DB_PORT,
-  DB_NAME,
-  DB_USER,
-  DB_PASSWORD,
-  DB_SSL,
-} = RuntimeConfig;
+const { DATABASE_URL, DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD, DB_SSL } = RuntimeConfig;
 
 const isConfigured = Boolean(DATABASE_URL || DB_HOST || DB_NAME || DB_USER);
 
