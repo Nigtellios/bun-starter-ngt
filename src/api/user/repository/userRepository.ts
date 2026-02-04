@@ -1,4 +1,7 @@
 import type { User } from "@api/user/model/userModel";
+import { getDb, isDatabaseConfigured } from "@init/db.ts";
+import { eq } from "drizzle-orm";
+import { usersTable } from "../../../db/schema.ts";
 
 export const users: User[] = [
   {
@@ -21,10 +24,21 @@ export const users: User[] = [
 
 export class UserRepository {
   async findAllAsync(): Promise<User[]> {
-    return users;
+    if (!isDatabaseConfigured()) {
+      return users;
+    }
+
+    const db = getDb();
+    return db.select().from(usersTable);
   }
 
   async findByIdAsync(id: number): Promise<User | null> {
-    return users.find((user) => user.id === id) || null;
+    if (!isDatabaseConfigured()) {
+      return users.find((user) => user.id === id) || null;
+    }
+
+    const db = getDb();
+    const rows = await db.select().from(usersTable).where(eq(usersTable.id, id)).limit(1);
+    return rows[0] ?? null;
   }
 }
