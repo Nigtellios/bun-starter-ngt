@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { usersTable } from "../src/db/schema.ts";
+import { runMigrations } from "../src/db/migrate.ts";
 import { closeDb, getDb, isDatabaseConfigured } from "../src/init/db.ts";
 
 const logPrefix = "[db:seed]";
@@ -11,19 +12,9 @@ if (!isDatabaseConfigured()) {
 
 const db = getDb();
 
-const createUsersTable = sql`
-  CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    age INTEGER NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
-  );
-`;
-
 try {
-  await db.execute(createUsersTable);
+  // Ensure schema is up to date before seeding.
+  await runMigrations();
 
   const [result] = await db.select({ count: sql<number>`count(*)` }).from(usersTable);
   const existingCount = Number(result?.count ?? 0);

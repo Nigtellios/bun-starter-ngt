@@ -14,7 +14,11 @@
     "prepare": "husky",
     "logs:init": "bun scripts/prepareLogs.ts",
     "logs:prune": "bun scripts/pruneLogs.ts",
-    "db:seed": "bun scripts/seedDb.ts"
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "bun scripts/migrateDb.ts",
+    "db:seed": "bun scripts/seedDb.ts",
+    "db:setup": "bun scripts/migrateDb.ts && bun scripts/seedDb.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.8",

@@ -3,6 +3,8 @@ import pino from "pino";
 
 const logFileTransportTarget = new URL("./logFileTransport.ts", import.meta.url).href;
 
+const isTest = RuntimeConfig.MODE === "test";
+
 const targets: pino.TransportTargetOptions[] = [
   {
     target: "pino-pretty",
@@ -26,19 +28,25 @@ if (RuntimeConfig.PRESERVE_LOGS) {
   });
 }
 
-const logger = pino({
-  level: RuntimeConfig.LOG_LEVEL,
-  transport: {
-    targets,
-  },
-});
+// In tests, keep the logger API intact (so spies work),
+// but avoid noisy console output and stack traces.
+const logger = isTest
+  ? pino({ level: "silent" })
+  : pino({
+      level: RuntimeConfig.LOG_LEVEL,
+      transport: {
+        targets,
+      },
+    });
 
-if (RuntimeConfig.PRESERVE_LOGS) {
-  logger.info(
-    `Logger initialized at ${RuntimeConfig.LOG_LEVEL} level (console + JSON files, ${RuntimeConfig.LOG_MAX_LINES} lines per file)`,
-  );
-} else {
-  logger.info(`Logger initialized at ${RuntimeConfig.LOG_LEVEL} level (console only)`);
+if (!isTest) {
+  if (RuntimeConfig.PRESERVE_LOGS) {
+    logger.info(
+      `Logger initialized at ${RuntimeConfig.LOG_LEVEL} level (console + JSON files, ${RuntimeConfig.LOG_MAX_LINES} lines per file)`,
+    );
+  } else {
+    logger.info(`Logger initialized at ${RuntimeConfig.LOG_LEVEL} level (console only)`);
+  }
 }
 
 export default logger;

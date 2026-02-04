@@ -26,10 +26,12 @@ export const mountOpenAPI = (
     docsPath = GlobalAppConfig.OPENAPI_JSON_PATH,
     swaggerPath = GlobalAppConfig.SWAGGER_UI_PATH,
     enableDocs = true,
+    servers,
   }: {
     docsPath?: string;
     swaggerPath?: string;
     enableDocs?: boolean;
+    servers?: Array<{ url: string; description?: string }>;
   } = {},
 ) => {
   applyRegisteredRoutes(openApiApp);
@@ -44,6 +46,7 @@ export const mountOpenAPI = (
       version: GlobalAppConfig.OPENAPI_CURRENT_VERSION,
     },
     openapi: GlobalAppConfig.OPENAPI_TARGET_VERSION,
+    ...(servers && servers.length > 0 ? { servers } : {}),
   });
 
   openApiApp.get(

@@ -7,6 +7,14 @@ import { logger } from "../../index.ts";
 import type { RequestErrorEnv } from "../errorHandler.ts";
 import requestLogger from "../requestLogger.ts";
 
+const silentError = (message: string) => {
+  const err = new Error(message);
+  // Bun prints pretty stack traces (with codeframes) during tests when errors are thrown.
+  // These errors are expected in this suite, so we clear the stack to keep output readable.
+  err.stack = "";
+  return err;
+};
+
 describe("requestLogger middleware", () => {
   let app: Hono<RequestErrorEnv>;
   let originalLogRequests: boolean;
@@ -194,7 +202,7 @@ describe("requestLogger middleware", () => {
 
     test("should log 500 responses as error", async () => {
       app.get("/error", (c) => {
-        throw new Error("Internal error");
+        throw silentError("Internal error");
       });
 
       const logSpy = spyOn(logger, "error");
@@ -344,7 +352,7 @@ describe("requestLogger middleware", () => {
       const isolatedApp = new Hono<RequestErrorEnv>();
       isolatedApp.use("*", requestLogger);
       isolatedApp.get("/error-test", (c) => {
-        throw new Error("Test error");
+        throw silentError("Test error");
       });
 
       const errorSpy = spyOn(logger, "error");

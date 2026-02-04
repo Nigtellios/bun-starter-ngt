@@ -29,6 +29,26 @@ copy .env.development.example .env
 ```
 
 Key settings live in `src/config/runtimeConfig.ts`.
+Two important URL-related settings:
+- `HOST`: interface to bind to (default `0.0.0.0`, good for Docker)
+- `PUBLIC_BASE_URL`: public URL shown in OpenAPI `servers` (useful behind reverse proxies)
+
+#### Binding (HOST/PORT) vs Public URL (PUBLIC_BASE_URL)
+These are **not the same thing**:
+
+- **Where the server listens (bind address)**: `HOST` + `PORT`
+  - `HOST=0.0.0.0` means “listen on all interfaces” (normal for Docker/VPS)
+  - `HOST=127.0.0.1` means “only local machine” (common when running behind nginx on the same server)
+- **What URL clients should use**: `PUBLIC_BASE_URL`
+  - This does **not** change where the server binds.
+  - It is used to set OpenAPI `servers`, so Swagger UI/docs show the correct public URL.
+
+Typical domain setups:
+- **API on a subdomain (cleanest)**: `api.xd.com`
+  - `PUBLIC_BASE_URL=https://api.xd.com`
+- **API under a path**: `xd.com/api`
+  - `PUBLIC_BASE_URL=https://xd.com/api`
+  - Your reverse proxy must forward `/api/*` to the Bun app (often stripping the `/api` prefix before proxying).
 
 ### Run (dev)
 
@@ -90,6 +110,39 @@ Related config:
 
 ---
 
+## Security notes (recommended baseline)
+
+This template includes a few security-related defaults (logging, error handling, rate limiting), but **production hardening is mostly about deployment**.
+
+### Reverse proxy + HTTPS (443)
+In professional setups the backend is usually:
+- exposed on **443** (HTTPS)
+- placed behind a **reverse proxy/CDN** (nginx / Traefik / Cloudflare)
+- configured so the app itself binds to a private interface (often `HOST=127.0.0.1`) and is not directly reachable from the internet
+
+### Public vs Admin endpoints
+- **Public endpoints (A)**: should be protected with **authentication + authorization** (not included in this template yet) and rate limiting.
+- **Admin endpoints (C)**: should be protected with **strong auth** + **IP allowlist** (or VPN).
+
+This template includes a protected admin example endpoint:
+- `GET /admin/health`
+
+Admin protection uses:
+- **Admin API Key**: `Authorization: Bearer <ADMIN_API_KEY>` (or `X-Admin-Api-Key: <ADMIN_API_KEY>`)
+- **Optional IP allowlist**: `ADMIN_IP_ALLOWLIST` (comma-separated IPs/CIDRs)
+
+Important notes:
+- IP checks rely on reverse proxy headers (`X-Forwarded-For` / `X-Real-Ip`), so set `TRUST_PROXY=true` **only** when you actually run behind a trusted proxy.
+- If you set `ADMIN_IP_ALLOWLIST`, requests without a valid client IP header will be blocked.
+
+### Database should not be public
+Do not expose Postgres to the internet. Only the backend (same host/network/VPC) should be able to reach it.
+
+### Secrets stay server-side
+Keep secrets in env vars (`.env`, container secrets, CI secrets). Never ship them to the frontend.
+
+---
+
 ## Database (PostgreSQL)
 
 ### Connection
@@ -104,6 +157,22 @@ Configure either:
 ### Schema
 Drizzle schema lives in `src/db/schema.ts` (currently includes `users`).
 
+### Migrations (recommended for real projects)
+This repo includes **drizzle-kit** migrations. The benefits:
+- repeatable schema changes across dev/staging/prod
+- CI can create a fresh DB and migrate it deterministically
+- seeding can assume the schema exists
+
+Files/folders:
+- `drizzle.config.ts`: drizzle-kit configuration
+- `drizzle/`: generated SQL migrations + migration journal
+
+Common workflow:
+- `bun run db:generate`: generate a new SQL migration from schema changes
+- `bun run db:migrate`: apply pending migrations to the configured DB
+- `bun run db:seed`: insert dummy data **only if tables are empty**
+- `bun run db:setup`: convenience for migrate + seed
+
 ### Seed / Dummy data
 Run:
 
@@ -112,7 +181,7 @@ bun run db:seed
 ```
 
 What it does:
-- creates `users` table if missing
+- applies migrations (ensures tables exist)
 - checks if table has rows
 - inserts 2 dummy users only when empty
 

@@ -12,6 +12,13 @@ logger.info(`Application running in ${RuntimeConfig.MODE} mode!`);
 
 mountOpenAPI(openAPI, {
   enableDocs: isDevelopment,
+  servers: RuntimeConfig.PUBLIC_BASE_URL
+    ? [
+        {
+          url: RuntimeConfig.PUBLIC_BASE_URL,
+        },
+      ]
+    : undefined,
 });
 
 export default openAPI;

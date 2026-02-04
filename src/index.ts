@@ -19,6 +19,7 @@ import app from "./init/app";
  */
 
 export default {
+  hostname: RuntimeConfig.HOST,
   port: RuntimeConfig.PORT,
   fetch: app.fetch,
 };

@@ -6,6 +6,14 @@ import { StatusCodes } from "http-status-codes";
 import errorHandlerMiddleware, { toError } from "../errorHandler.ts";
 import requestLogger from "../requestLogger.ts";
 
+const silentError = (message: string) => {
+  const err = new Error(message);
+  // Bun prints pretty stack traces (with codeframes) during tests when errors are thrown.
+  // These errors are expected in this suite, so we clear the stack to keep output readable.
+  err.stack = "";
+  return err;
+};
+
 describe("toError utility", () => {
   test("should convert Error instance to Error", () => {
     const error = new Error("Test error");
@@ -160,7 +168,7 @@ describe("errorHandlerMiddleware", () => {
   describe("Generic error handling", () => {
     test("should handle generic Error as 500 Internal Server Error", async () => {
       app.get("/error", (c) => {
-        throw new Error("Something went wrong");
+        throw silentError("Something went wrong");
       });
 
       const response = await app.request("/error");
@@ -224,7 +232,7 @@ describe("errorHandlerMiddleware", () => {
 
     test("should include X-Request-Id in error responses", async () => {
       app.get("/error", (c) => {
-        throw new Error("Test error");
+        throw silentError("Test error");
       });
 
       const response = await app.request("/error");
@@ -304,7 +312,7 @@ describe("errorHandlerMiddleware", () => {
     test("should handle async errors in route handlers", async () => {
       app.get("/async-error", async (c) => {
         await new Promise((resolve) => setTimeout(resolve, 10));
-        throw new Error("Async error");
+        throw silentError("Async error");
       });
 
       const response = await app.request("/async-error");
@@ -339,7 +347,7 @@ describe("errorHandlerMiddleware", () => {
 
     test("should handle multiple error types in sequence", async () => {
       app.get("/error-1", (c) => {
-        throw new Error("Error 1");
+        throw silentError("Error 1");
       });
 
       app.get("/error-2", (c) => {
