@@ -1,5 +1,5 @@
-import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { getDb, isDatabaseConfigured } from "@init/db.ts";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
 
 export const runMigrations = async () => {
   if (!isDatabaseConfigured()) {
@@ -9,4 +9,3 @@ export const runMigrations = async () => {
   const db = getDb();
   await migrate(db, { migrationsFolder: "drizzle" });
 };
-

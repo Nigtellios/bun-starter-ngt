@@ -75,4 +75,3 @@ export const isIpAllowlisted = (ip: string, allowlist: string[]): boolean => {
 
   return false;
 };
-
